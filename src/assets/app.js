@@ -12,6 +12,7 @@ const $bottomAlert = document.getElementById("bottom_alert");
 
 const $singleSearch = document.getElementById("singleSearch");
 
+
 // const $copyApiText = document.getElementById('copy_api')
 
 let api;
@@ -25,7 +26,15 @@ $fileUpload.addEventListener("change", (e) => {
   let input = e.target;
   let reader = new FileReader();
 
-  $fileLabel.innerText = "업로드 중...";
+
+  if (input.files.length !== 0) {
+    $fileLabel.innerText = "파일을 업로드 중입니다...";
+    $trButton.classList.add('disabled')
+    $dnButton.classList.add('disabled')
+    reader.readAsBinaryString(input.files[0]);
+  } else {
+    $fileLabel.innerText = "파일 업로드";
+  }
 
   reader.onload = () => {
     let data = reader.result;
@@ -39,13 +48,10 @@ $fileUpload.addEventListener("change", (e) => {
       let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
       dataIn(rows);
     });
-  };
-  if (input.files.length !== 0) {
-    reader.readAsBinaryString(input.files[0]);
+    $trButton.classList.remove('disabled')
+    $dnButton.classList.remove('disabled')
     $fileLabel.innerText = input.value;
-  } else {
-    $fileLabel.innerText = "파일 업로드";
-  }
+  };
 });
 
 function dataIn(rows) {
@@ -72,7 +78,8 @@ function dataIn(rows) {
           loadNumber[count10].push(R.사업자등록번호 + "");
           loadId[count10].push(R.가맹점관리번호);
         }
-      });
+      }); alert('파일 업로드 완료!')
+
   }
 
   $trButton.addEventListener("click", async () => {
